@@ -3,7 +3,7 @@ import json
 from collections import deque
 
 ################################################################################
-# 1) API CONFIGURATION - With YOUR actual credentials
+# 1) API CONFIGURATION
 ################################################################################
 API_HOST = "instagram-scraper-api2.p.rapidapi.com"
 API_KEY = "0acf61faf2msh0b14d26175218ffp167e2cjsn3492bbf87bc2"
@@ -67,7 +67,7 @@ def fetch_followers(user):
     return all_followers
 
 ################################################################################
-# 3) PAGINATED REQUESTS - FETCH ALL FOLLOWINGS ("followed")
+# 3) PAGINATED REQUESTS - FETCH ALL FOLLOWINGS
 ################################################################################
 def fetch_followings(user):
     """
