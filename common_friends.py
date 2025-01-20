@@ -135,8 +135,8 @@ def mutual_connection_distance(user1, user2, max_depth):
     Returns the minimum number of 'mutual-friend hops' between user1 and user2.
       - 0 if user1 == user2
       - 1 if user2 is a direct mutual friend of user1
-      - In this new commit, returns the path of mutual friends between user1 and user2
       - etc.
+      - The path is also returned as a list of usernames, displayed by joining the elements with ' -> '.
     If no connection is found within `max_depth`, returns None.
     """
     if user1 == user2:
