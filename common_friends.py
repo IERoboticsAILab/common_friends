@@ -130,11 +130,12 @@ def get_mutual_friends(user):
 ################################################################################
 # 5) BFS TO FIND SHORTEST "MUTUAL-FRIEND" DISTANCE
 ################################################################################
-def mutual_connection_distance(user1, user2, max_depth=3):
+def mutual_connection_distance(user1, user2, max_depth):
     """
     Returns the minimum number of 'mutual-friend hops' between user1 and user2.
       - 0 if user1 == user2
       - 1 if user2 is a direct mutual friend of user1
+      - In this new commit, returns the path of mutual friends between user1 and user2
       - etc.
     If no connection is found within `max_depth`, returns None.
     """
@@ -143,6 +144,7 @@ def mutual_connection_distance(user1, user2, max_depth=3):
     
     visited = set([user1])
     queue = deque([(user1, 0)])  # (current_user, distance)
+    predecessors = {user1: None}
     
     while queue:
         current_user, distance = queue.popleft()
@@ -155,16 +157,21 @@ def mutual_connection_distance(user1, user2, max_depth=3):
         current_mutuals = get_mutual_friends(current_user)
         
         if user2 in current_mutuals:
-            return distance + 1
+            path = [user2]
+            while current_user is not None:
+                path.append(current_user)
+                current_user = predecessors[current_user]
+            return distance + 1, path[::-1] # Return distance and path
         
         # Enqueue each mutual friend for further exploration
         for mf in current_mutuals:
             if mf not in visited:
                 visited.add(mf)
                 queue.append((mf, distance + 1))
+                predecessors[mf] = current_user
     
     # No connection found up to max_depth
-    return None
+    return None, None
 
 ################################################################################
 # 6) EXAMPLE USAGE
@@ -179,10 +186,10 @@ if __name__ == "__main__":
     if distance is None:
         print(f"No mutual-friend connection found between {user1} and {user2} (depth <= 3).")
     elif distance == 0:
-        print(f"{user1} and {user2} refer to the same user (distance=0).")
+        for users in distance:
+            print(f"{user1} and {user2} are the same user.")
     else:
-        print(f"{user1} is {distance} mutual-friend hop(s) away from {user2}.")
-
+        print(f"{user1} is {distance[0]} mutual-friend hop(s) away from {user2}. \n Path: {' -> '.join(distance[1])}")
 
 
 
