@@ -191,5 +191,32 @@ if __name__ == "__main__":
     else:
         print(f"{user1} is {distance[0]} mutual-friend hop(s) away from {user2}. \n Path: {' -> '.join(distance[1])}")
 
+################################################################################
+# 7) JSON WITH MUTUAL FRIEND DATA
+################################################################################
 
+trimmed_distance = distance[1][1:-1]  # Remove the first and last elements (user1 and user2)
+total_user_data = {}
+
+for user in trimmed_distance:
+    url = f"https://{API_HOST}/v1/info?username_or_id_or_url={user}&url_embed_safe=true" # Gets data for each user
+    response = requests.get(url, headers=HEADERS)
+    response.raise_for_status()
+    data = response.json()
+    n = 1
+
+    
+    total_user_data[f"connection{n}"] = {
+        "username": data["data"].get("username", ""),
+        "full_name": data["data"].get("full_name", ""),
+        "profile_pic_url": data["data"].get("hd_profile_pic_url", ""),
+        "bio": data["data"].get("biography", ""),
+    } # Adds user data to the JSON file
+    
+    n =+ 1
+
+with open("mutual_friends.json", "w") as f:
+    json.dump(total_user_data, f, indent=4)
+
+print("JSON file created successfully!")
 
